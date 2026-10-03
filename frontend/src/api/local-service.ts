@@ -1,6 +1,13 @@
 import { MODULE_BY_KEY } from '@/data/modules'
-import { allRows, listRows, resetRows, saveRows } from '@/data/local-store'
-import type { ActionResult, EntryRow, ModuleMeta, OverviewResult, PageResult } from '@/data/types'
+import {
+  allRows,
+  listRows,
+  resetRows,
+  saveRows,
+} from '@/data/local-store'
+import { isPending, isAbnormal, normalizeRow } from '@/data/state'
+import { cancelReplenish, confirmReplenish, markExpired } from './supply-workflow'
+import type { ActionResult, EntryRow, ModuleMeta, OverviewResult, PageResult, ReplenishResult } from '@/data/types'
 
 // 会写进数据的「往回走」动作：命中就把这条记录标成异常态，看板上能一眼看出来。
 const NEGATIVE_ACTIONS = ['撤销', '作废', '拒绝', '驳回', '停用', '忽略', '下线', '回滚']
@@ -28,7 +35,32 @@ export function listEntries(key: string, filters: Record<string, string> = {}): 
   return { items: matched, total: matched.length, page: 1, size: matched.length }
 }
 
+// 物资补充是多步骤工作流（处理抽屉驱动），通用单动作流转承载不了数量扣增、
+// 盘点冲突与中断接续，统一转发到 supply-workflow，避免页面绕过工作流把状态改乱。
+function dispatchSupplyAction(id: number, action: string): ReplenishResult {
+  if (action === '发起补充') {
+    return {
+      ok: false,
+      message: '请在「处理抽屉」中发起补充，需填写补充数量与经办林场',
+    }
+  }
+  if (action === '确认补充') {
+    return confirmReplenish(id)
+  }
+  if (action === '标记过期') {
+    return markExpired(id)
+  }
+  if (action === '终止补充') {
+    return cancelReplenish(id)
+  }
+  return { ok: false, message: `防火物资没有登记「${action}」这个动作` }
+}
+
 export function runAction(key: string, id: number, action: string): ActionResult {
+  if (key === 'supply') {
+    return dispatchSupplyAction(id, action)
+  }
+
   const meta = moduleMeta(key)
   const target = meta.actionTargets[action]
   if (!target) {
@@ -43,12 +75,15 @@ export function runAction(key: string, id: number, action: string): ActionResult
   if (current === target) {
     return { ok: false, message: `${meta.entity}已经是「${target}」，不用重复操作` }
   }
-  const lastStatus = meta.statuses[meta.statuses.length - 1]
+
+  const negative = NEGATIVE_ACTIONS.some((verb) => action.startsWith(verb))
   const updated: EntryRow = {
     ...rows[index],
     status: target,
-    pending: target !== lastStatus,
-    abnormal: NEGATIVE_ACTIONS.some((verb) => action.startsWith(verb)),
+    // 待办由目标状态派生：确认类动作结案就取消待办，失败分支根本不会走到这里，
+    // 不会再出现「数量没变、待办先没了」。
+    pending: isPending(meta, target),
+    abnormal: isAbnormal(meta, target) || negative,
   }
   const next = [...rows]
   next[index] = updated
@@ -91,8 +126,8 @@ export function loadOverview(): OverviewResult {
     return {
       name: meta.name,
       created: entries.length,
-      pending: entries.filter((row) => row.pending).length,
-      abnormal: entries.filter((row) => row.abnormal).length,
+      pending: entries.filter((row) => normalizeRow(meta, row).pending).length,
+      abnormal: entries.filter((row) => normalizeRow(meta, row).abnormal).length,
     }
   })
   const cards = [

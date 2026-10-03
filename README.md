@@ -68,4 +68,12 @@ npm run build
 - 字段、状态、动作与流转目标集中在 `frontend/src/data/modules.ts`；示例数据在
   `frontend/src/data/seed.ts`。
 - 状态流转只允许在 `local-service.ts` 里改，页面组件不做业务判断。
-- 想回到初始数据：清掉浏览器里 `forest-fire-patrol:entries` 这一项，或调用 `resetModule(模块)`。
+- 物资补充是多步骤工作流（发起 → 现场盘点 → 确认入帐），由
+  `frontend/src/api/supply-workflow.ts` 独占处理，在途任务持久化在
+  `forest-fire-patrol:replenish-tasks`。每一步落盘，中断后从原步骤接续；
+  补充前 / 后数量同时定格保存，确认入帐幂等（同一单只扣增一次）。
+  拦截优先级：过期异常 ＞ 现场盘点冲突 ＞ 越界数量。
+- 各模块的待办（pending）由当前状态派生，规则集中在
+  `frontend/src/data/state.ts`，历史 localStorage 数据读取时自动归一。
+- 想回到初始数据：清掉浏览器里 `forest-fire-patrol:entries` 与
+  `forest-fire-patrol:replenish-tasks` 两项，或调用 `resetModule(模块)`。
