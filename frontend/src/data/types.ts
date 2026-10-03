@@ -17,6 +17,8 @@ export type ModuleMeta = {
   statuses: string[]
   actions: string[]
   actionTargets: Record<string, string>
+  /** 进入这些状态视为办结：不再是待办，其余状态都算待办。 */
+  closedStatuses: string[]
   metrics: string[]
 }
 
@@ -30,6 +32,12 @@ export type PageResult = {
 export type ActionResult = {
   ok: boolean
   message: string
+}
+
+/** 动作附带的业务参数：确认补充时的实际补充量、处理抽屉快照对应的版本号。 */
+export type ActionPayload = {
+  quantity?: number | string
+  expectedVersion?: number
 }
 
 export type OverviewResult = {

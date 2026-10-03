@@ -11,6 +11,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待执行", "执行中", "已完成", "已取消"],
     actions: ["开始巡护", "确认完成", "取消任务"],
     actionTargets: {"开始巡护": "执行中", "确认完成": "已完成", "取消任务": "已取消"},
+    closedStatuses: ["已完成", "已取消"],
     metrics: ["今日任务数", "已完成任务", "巡护覆盖率"],
   },
   {
@@ -22,6 +23,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["正常", "蓝色预警", "黄色预警", "橙色预警", "红色预警"],
     actions: ["更新等级", "解除预警", "升级预警"],
     actionTargets: {"更新等级": "橙色预警", "解除预警": "正常", "升级预警": "红色预警"},
+    closedStatuses: ["正常"],
     metrics: ["监测点数", "红色预警数", "今日新增预警"],
   },
   {
@@ -33,6 +35,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["正常值守", "临时关闭", "设备故障", "维修中"],
     actions: ["记录值守", "登记故障", "关闭瞭望台"],
     actionTargets: {"记录值守": "正常值守", "登记故障": "设备故障", "关闭瞭望台": "临时关闭"},
+    closedStatuses: ["正常值守"],
     metrics: ["瞭望台总数", "正常值守数", "故障台数"],
   },
   {
@@ -44,6 +47,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["正常", "需割草", "需补植", "已荒废"],
     actions: ["安排维护", "确认恢复", "标记荒废"],
     actionTargets: {"安排维护": "需割草", "确认恢复": "正常", "标记荒废": "已荒废"},
+    closedStatuses: ["正常", "已荒废"],
     metrics: ["隔离带总长", "需维护条数", "荒废条数"],
   },
   {
@@ -55,6 +59,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["在营待命", "已出动", "扑救中", "已撤回", "休整中"],
     actions: ["下达出动", "转入休整", "撤回队伍"],
     actionTargets: {"下达出动": "已出动", "转入休整": "休整中", "撤回队伍": "已撤回"},
+    closedStatuses: ["在营待命", "已撤回", "休整中"],
     metrics: ["队伍总数", "待命队伍", "出动队伍"],
   },
   {
@@ -66,6 +71,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["可用", "已领用", "待检修", "已报废"],
     actions: ["领用装备", "送检登记", "报废装备"],
     actionTargets: {"领用装备": "已领用", "送检登记": "待检修", "报废装备": "已报废"},
+    closedStatuses: ["可用", "已报废"],
     metrics: ["装备总数", "可用装备", "待检修数"],
   },
   {
@@ -77,6 +83,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["已录入", "已审核", "已修正", "异常值"],
     actions: ["提交审核", "确认数据", "标记异常"],
     actionTargets: {"提交审核": "已审核", "确认数据": "已录入", "标记异常": "异常值"},
+    closedStatuses: ["已审核", "已修正"],
     metrics: ["今日观测数", "待审核记录", "异常记录数"],
   },
   {
@@ -88,6 +95,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待核实", "已确认", "已出警", "已扑灭", "误报"],
     actions: ["核实火情", "出动扑救", "确认误报"],
     actionTargets: {"核实火情": "已确认", "出动扑救": "已出警", "确认误报": "误报"},
+    closedStatuses: ["已扑灭", "误报"],
     metrics: ["今日报告数", "已确认火情", "扑救中火情"],
   },
   {
@@ -99,6 +107,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待执行", "飞行中", "已完成", "因故中止"],
     actions: ["开始飞行", "确认完成", "中止任务"],
     actionTargets: {"开始飞行": "飞行中", "确认完成": "已完成", "中止任务": "因故中止"},
+    closedStatuses: ["已完成", "因故中止"],
     metrics: ["今日飞行任务", "已完成任务", "发现异常数"],
   },
   {
@@ -110,6 +119,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待开展", "进行中", "已完成", "已取消"],
     actions: ["开展活动", "确认完成", "取消活动"],
     actionTargets: {"开展活动": "进行中", "确认完成": "已完成", "取消活动": "已取消"},
+    closedStatuses: ["已完成", "已取消"],
     metrics: ["本月活动数", "已完成数", "覆盖人次"],
   },
   {
@@ -121,6 +131,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["正常检查", "临时关闭", "升级检查", "等待换岗"],
     actions: ["升级检查", "关闭站点", "安排换岗"],
     actionTargets: {"升级检查": "升级检查", "关闭站点": "临时关闭", "安排换岗": "正常检查"},
+    closedStatuses: ["正常检查"],
     metrics: ["站点总数", "正常检查数", "收缴火种数"],
   },
   {
@@ -132,6 +143,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待确认", "已确认", "值勤中", "已交接", "已调班"],
     actions: ["确认排班", "记录交接", "申请调班"],
     actionTargets: {"确认排班": "已确认", "记录交接": "已交接", "申请调班": "已调班"},
+    closedStatuses: ["已交接", "已调班"],
     metrics: ["今日值勤人数", "待交接次数", "调班申请数"],
   },
   {
@@ -142,7 +154,8 @@ export const MODULES: ModuleMeta[] = [
     fields: ["物资编号", "物资名称", "物资类别", "规格型号", "储备林场", "预警储备量", "实际储备量", "物资状态"],
     statuses: ["充足", "偏低", "需补充", "已过期"],
     actions: ["发起补充", "确认补充", "标记过期"],
-    actionTargets: {"发起补充": "偏低", "确认补充": "充足", "标记过期": "已过期"},
+    actionTargets: {"发起补充": "需补充", "确认补充": "充足", "标记过期": "已过期"},
+    closedStatuses: ["充足"],
     metrics: ["物资种类", "需补充种类", "过期种类"],
   },
   {
@@ -154,6 +167,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["正常通行", "需维护", "正在施工", "禁止通行"],
     actions: ["安排巡检", "登记施工", "封闭道路"],
     actionTargets: {"安排巡检": "需维护", "登记施工": "正在施工", "封闭道路": "禁止通行"},
+    closedStatuses: ["正常通行", "禁止通行"],
     metrics: ["道路总里程", "需维护段数", "施工段数"],
   },
   {
@@ -165,6 +179,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["完好", "有缺株", "需补植", "已退化"],
     actions: ["安排补植", "确认补植", "标记退化"],
     actionTargets: {"安排补植": "需补植", "确认补植": "完好", "标记退化": "已退化"},
+    closedStatuses: ["完好", "已退化"],
     metrics: ["林带总数", "完好条数", "缺株条数"],
   },
   {
@@ -176,6 +191,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待筹备", "筹备中", "已实施", "已总结", "已归档"],
     actions: ["开始筹备", "完成演练", "提交总结"],
     actionTargets: {"开始筹备": "筹备中", "完成演练": "已实施", "提交总结": "已总结"},
+    closedStatuses: ["已总结", "已归档"],
     metrics: ["年度演练次数", "待演练计划", "已总结场次"],
   },
   {
@@ -187,6 +203,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["待申请", "待审批", "已批准", "已驳回", "已执行"],
     actions: ["提交申请", "批准申请", "驳回答复"],
     actionTargets: {"提交申请": "待审批", "批准申请": "已批准", "驳回答复": "已驳回"},
+    closedStatuses: ["已批准", "已驳回", "已执行"],
     metrics: ["待审批申请", "已批准用火", "驳回申请"],
   },
   {
@@ -198,6 +215,7 @@ export const MODULES: ModuleMeta[] = [
     statuses: ["已录入", "已审核", "需复核", "已归档"],
     actions: ["提交审核", "确认记录", "要求复核"],
     actionTargets: {"提交审核": "已审核", "确认记录": "已归档", "要求复核": "需复核"},
+    closedStatuses: ["已归档"],
     metrics: ["样地数量", "待审核记录", "本月录入"],
   },
 ]
